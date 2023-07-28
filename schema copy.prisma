@@ -4,28 +4,30 @@
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-enum Role {
-  Vente
-  Controle
-  Regulation
-  Supervision
-  Gestion
-  Operateur
-  Administration
-  Observation
-}
+model Role {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
 
+  name String @unique
+
+  isActiveted Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  User        User[]
+}
 model User {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  username    String   @unique
+  email    String   @unique
   password    String
-  role        Role     @default(Administration)
+  name String?
+  roleId      String?      @db.ObjectId
+  role        Role?        @relation(fields: [roleId], references: [id])
   account     Account?
   isActiveted Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -35,16 +37,17 @@ model User {
 model Account {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   name       String
-  email      String
-  role       String
+  phone      String?
   img        String?
-  companieId String   @db.ObjectId
-  reseauId   String   @db.ObjectId
+  companieId String?   @db.ObjectId
+  reseauId   String?   @db.ObjectId
   userId     String   @unique @db.ObjectId
-  Companie   Companie @relation(references: [id], fields: [companieId], onDelete: Cascade)
-  Reseau     Reseau   @relation(references: [id], fields: [reseauId], onDelete: Cascade)
+  Companie   Companie? @relation(references: [id], fields: [companieId])
+  Reseau     Reseau?   @relation(references: [id], fields: [reseauId])
   user       User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
+
+
 
 model Device {
   id   String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -52,11 +55,23 @@ model Device {
   type String?
 
   attribution DeviceAttribution?
+  sims Sim?
   isActiveted Boolean            @default(false)
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 }
-
+model Sim {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  number   String  @unique
+  imsi     String  @unique
+  provider String? @default("Orange")
+  deviceId   String   @unique @db.ObjectId
+  device     Device   @relation(references: [id], fields: [deviceId], onDelete: Cascade)
+  
+  isActiveted Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
 model Licence {
   id            String     @id @default(auto()) @map("_id") @db.ObjectId
   licenceCode   Int?
@@ -70,17 +85,7 @@ model Licence {
   updatedAt     DateTime   @updatedAt
 }
 
-model Sim {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  number   String  @unique
-  imsi     String  @unique
-  provider String? @default("Orange")
 
-  device      DeviceAttribution?
-  isActiveted Boolean            @default(false)
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-}
 
 model Reseau {
   id          String              @id @default(auto()) @map("_id") @db.ObjectId
@@ -92,7 +97,6 @@ model Reseau {
   Operator    Operator[]
   Device      DeviceAttribution[]
   Vehicule    Vehicule[]
-  User        Account[]
   Itinerary   Itinerary[]
   Selling     Selling[]
   Controller  Controller[]
@@ -104,6 +108,7 @@ model Reseau {
   Rubrics     Rubrics[]
   SubscriptionPlan   SubscriptionPlan[]
   Subscription   Subscription[]
+  Account     Account[]
 
 }
 
@@ -163,7 +168,6 @@ model Companie {
   ReseauId    String              @db.ObjectId
   Reseau      Reseau              @relation(references: [id], fields: [ReseauId], onDelete: Cascade)
   Operator    Operator[]
-  Account     Account[]
   Vehicules   Vehicule[]
   Device      DeviceAttribution[]
   Itinerary   Itinerary[]
@@ -172,7 +176,7 @@ model Companie {
   Rubrics     Rubrics[]
   Selling     Selling[]
   Contract    Contract[]
-
+  Account     Account[]
 }
 
 model Operator {
@@ -222,8 +226,6 @@ model DeviceAttribution {
 
   deviceId   String   @unique @db.ObjectId
   device     Device   @relation(references: [id], fields: [deviceId], onDelete: Cascade)
-  simId      String   @unique @db.ObjectId
-  sim        Sim      @relation(references: [id], fields: [simId])
   operatorId String   @db.ObjectId
   operator   Operator @relation(references: [id], fields: [operatorId], onDelete: Cascade)
   companieId String   @db.ObjectId

@@ -5,16 +5,17 @@ export function middleware(req: NextRequest) {
 
   const response = NextResponse.next();
 
-  const ALLOWED_ORIGINS = ['https://example.com', 'http://localhost:3000']; // Replace with your allowed origins
+  const ALLOWED_ORIGINS = ['http://localhost:3000']; // Replace with your allowed origins
   const origin = req.headers.get('Origin');
 
   if (origin && ALLOWED_ORIGINS.includes(origin)) {
     response.headers.set('Access-Control-Allow-Origin', origin);
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    response.headers.set('Content-Type', 'Application/json');
   }
 
-  console.log('API response headers:', ALLOWED_ORIGINS);
+  
   return response;
 }
 

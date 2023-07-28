@@ -1,22 +1,19 @@
-'use client'
+"use client";
 
 import Image from "next/image";
-import {useState} from "react"
-
+import { useState } from "react";
 
 export default function Login() {
- const [username, setUsername] = useState('')
- const [password, setPassword] = useState('')
- const loginUser = async (e: any) => {
-  e.preventDefault();
-  fetch('http://localhost:"3000/api/auth', {
-    method: 'POST',
-    headers:{'Content-Type': 'application/json;charset=utf-8'},
-    body: JSON.stringify({username, password})
-  })
- }
-
- 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const loginUser = async (e: any) => {
+    e.preventDefault();
+    fetch('http://localhost:"3000/api/auth', {
+      method: "POST",
+      headers: { "Content-Type": "application/json;charset=utf-8" },
+      body: JSON.stringify({ username, password }),
+    });
+  };
 
   return (
     <>
@@ -39,20 +36,20 @@ export default function Login() {
           <form className="space-y-6" action="#" method="POST">
             <div>
               <label
-                htmlFor="username"
+                htmlFor="email"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-               Username
+                Email
               </label>
               <div className="mt-2">
                 <input
-                  id="username"
-                  name="username"
-                  type="username"
-                  autoComplete="username"
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
                   required
                   value={username}
-                  onChange={(e)=> setUsername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -82,7 +79,7 @@ export default function Login() {
                   type="password"
                   autoComplete="current-password"
                   value={password}
-                  onChange={(e)=> setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
                 />
@@ -100,7 +97,7 @@ export default function Login() {
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">
-          powered by {" "}
+            powered by{" "}
             <a
               href="https://yawatechnologie.sn"
               className="font-semibold leading-6 text-emerald-600 hover:text-emerald-500"
@@ -117,17 +114,19 @@ export default function Login() {
           </p>
         </div>
 
-
-<footer className="bg-white rounded-lg shadow dark:bg-gray-900 m-4">
-    <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-      
-        <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-        <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 
-        <a href="https://yawatechnologie.sn/" className="hover:underline"> Yawa Technologie™</a>. All Rights Reserved. version: 3.0</span>
-    </div>
-</footer>
-
-
+        <footer className="bg-white rounded-lg shadow dark:bg-gray-900 m-4">
+          <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+            <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+            <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+              © 2023
+              <a href="https://yawatechnologie.sn/" className="hover:underline">
+                {" "}
+                Yawa Technologie™
+              </a>
+              . All Rights Reserved. version: 3.0
+            </span>
+          </div>
+        </footer>
       </div>
     </>
   );
